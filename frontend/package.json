@@ -1,0 +1,47 @@
+{
+  "name": "fitness-tracker-frontend",
+  "version": "0.1.0",
+  "description": "Modern Fitness Tracker App Frontend",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export"
+  },
+  "dependencies": {
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "@reduxjs/toolkit": "^2.0.1",
+    "react-redux": "^9.0.4",
+    "redux-persist": "^6.0.0",
+    "axios": "^1.6.2",
+    "react-query": "^3.39.3",
+    "react-hook-form": "^7.48.2",
+    "react-hot-toast": "^2.4.1",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0",
+    "date-fns": "^3.0.6",
+    "lucide-react": "^0.302.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.2.0",
+    "framer-motion": "^10.16.16",
+    "react-dropzone": "^14.2.3",
+    "js-cookie": "^3.0.5",
+    "@headlessui/react": "^1.7.17"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/js-cookie": "^3.0.6",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4"
+  }
+}
