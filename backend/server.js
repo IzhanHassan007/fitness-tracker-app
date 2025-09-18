@@ -32,8 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/fitness-tracker', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
 })
 .then(() => console.log('✅ MongoDB Connected Successfully'))
 .catch(err => {

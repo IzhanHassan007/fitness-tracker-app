@@ -1,17 +1,16 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Providers from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('http://localhost:3000'),
   title: 'FitTracker - Your Personal Fitness Journey',
   description: 'Track your workouts, nutrition, and fitness goals with our comprehensive fitness tracker app.',
   keywords: 'fitness, tracker, health, workout, nutrition, goals',
   authors: [{ name: 'FitTracker Team' }],
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#0ea5e9',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
@@ -36,6 +35,12 @@ export const metadata: Metadata = {
     description: 'Track your workouts, nutrition, and fitness goals with our comprehensive fitness tracker app.',
     images: ['/twitter-image.png'],
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#0ea5e9',
 };
 
 export default function RootLayout({
