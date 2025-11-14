@@ -1,0 +1,15 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Optional: ensure Node functions bundle consistently
+[functions]
+  node_bundler = "esbuild"
+
+# Next.js runtime on Netlify (auto-detected; plugin is optional for recent Next)
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
