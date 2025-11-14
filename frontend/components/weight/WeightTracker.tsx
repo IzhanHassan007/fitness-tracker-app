@@ -113,6 +113,8 @@ const WeightTracker: React.FC = () => {
     return `${sign}${absChange.toFixed(1)} kg`;
   };
 
+  const consistency = summary?.consistency;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 bg-dots py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -452,7 +454,7 @@ const WeightTracker: React.FC = () => {
               </div>
             </div>
             <div className="p-6">
-              {summary?.consistency ? (
+              {consistency ? (
                 <div className="space-y-6">
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
@@ -465,19 +467,19 @@ const WeightTracker: React.FC = () => {
                         <span className="font-semibold text-gray-700">This Week</span>
                       </div>
                       <span className={`font-bold px-3 py-1 rounded-full text-sm ${
-                        summary.consistency.thisWeek >= 80 ? 'bg-green-100 text-green-700' :
-                        summary.consistency.thisWeek >= 60 ? 'bg-blue-100 text-blue-700' :
-                        summary.consistency.thisWeek >= 40 ? 'bg-yellow-100 text-yellow-700' :
+                        consistency.thisWeek >= 80 ? 'bg-green-100 text-green-700' :
+                        consistency.thisWeek >= 60 ? 'bg-blue-100 text-blue-700' :
+                        consistency.thisWeek >= 40 ? 'bg-yellow-100 text-yellow-700' :
                         'bg-red-100 text-red-700'
                       }`}>
-                        {summary.consistency.thisWeek.toFixed(0)}%
+                        {consistency.thisWeek.toFixed(0)}%
                       </span>
                     </div>
                     <div className="w-full bg-gradient-to-r from-gray-100 to-gray-200 rounded-full h-3 shadow-inner">
                       <motion.div 
                         className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full shadow-sm" 
                         initial={{ width: 0 }}
-                        animate={{ width: `${summary.consistency.thisWeek}%` }}
+                        animate={{ width: `${consistency.thisWeek}%` }}
                         transition={{ duration: 1, delay: 0.8 }}
                       />
                     </div>
@@ -494,19 +496,19 @@ const WeightTracker: React.FC = () => {
                         <span className="font-semibold text-gray-700">This Month</span>
                       </div>
                       <span className={`font-bold px-3 py-1 rounded-full text-sm ${
-                        summary.consistency.thisMonth >= 80 ? 'bg-green-100 text-green-700' :
-                        summary.consistency.thisMonth >= 60 ? 'bg-blue-100 text-blue-700' :
-                        summary.consistency.thisMonth >= 40 ? 'bg-yellow-100 text-yellow-700' :
+                        consistency.thisMonth >= 80 ? 'bg-green-100 text-green-700' :
+                        consistency.thisMonth >= 60 ? 'bg-blue-100 text-blue-700' :
+                        consistency.thisMonth >= 40 ? 'bg-yellow-100 text-yellow-700' :
                         'bg-red-100 text-red-700'
                       }`}>
-                        {summary.consistency.thisMonth.toFixed(0)}%
+                        {consistency.thisMonth.toFixed(0)}%
                       </span>
                     </div>
                     <div className="w-full bg-gradient-to-r from-gray-100 to-gray-200 rounded-full h-3 shadow-inner">
                       <motion.div 
                         className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full shadow-sm" 
                         initial={{ width: 0 }}
-                        animate={{ width: `${summary.consistency.thisMonth}%` }}
+                        animate={{ width: `${consistency.thisMonth}%` }}
                         transition={{ duration: 1, delay: 0.9 }}
                       />
                     </div>
@@ -523,19 +525,19 @@ const WeightTracker: React.FC = () => {
                         <span className="font-semibold text-gray-700">Overall</span>
                       </div>
                       <span className={`font-bold px-3 py-1 rounded-full text-sm ${
-                        summary.consistency.overall >= 80 ? 'bg-green-100 text-green-700' :
-                        summary.consistency.overall >= 60 ? 'bg-blue-100 text-blue-700' :
-                        summary.consistency.overall >= 40 ? 'bg-yellow-100 text-yellow-700' :
+                        consistency.overall >= 80 ? 'bg-green-100 text-green-700' :
+                        consistency.overall >= 60 ? 'bg-blue-100 text-blue-700' :
+                        consistency.overall >= 40 ? 'bg-yellow-100 text-yellow-700' :
                         'bg-red-100 text-red-700'
                       }`}>
-                        {summary.consistency.overall.toFixed(0)}%
+                        {consistency.overall.toFixed(0)}%
                       </span>
                     </div>
                     <div className="w-full bg-gradient-to-r from-gray-100 to-gray-200 rounded-full h-3 shadow-inner">
                       <motion.div 
                         className="bg-gradient-to-r from-purple-500 to-indigo-600 h-3 rounded-full shadow-sm" 
                         initial={{ width: 0 }}
-                        animate={{ width: `${summary.consistency.overall}%` }}
+                        animate={{ width: `${consistency.overall}%` }}
                         transition={{ duration: 1, delay: 1 }}
                       />
                     </div>
@@ -548,9 +550,9 @@ const WeightTracker: React.FC = () => {
                       <span className="text-sm font-bold text-blue-700">Consistency Tip</span>
                     </div>
                     <p className="text-sm text-blue-600">
-                      {summary.consistency.overall >= 80 ? 
+                      {consistency.overall >= 80 ? 
                         "Excellent consistency! Keep up the great work! 🎆" :
-                        summary.consistency.overall >= 60 ?
+                        consistency.overall >= 60 ?
                         "Good progress! Try to log entries more regularly for better insights. 💪" :
                         "Set a daily reminder to track your weight consistently. Small habits make big changes! ✨"
                       }

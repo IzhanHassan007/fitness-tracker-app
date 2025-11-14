@@ -1,8 +1,21 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { apiService } from '../../services/api';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { apiService } from '../../services/firebaseService';
 
 // Initial state
-const initialState = {
+type WeightState = {
+  entries: any[];
+  currentEntry: any | null;
+  pagination: { page: number; limit: number; total: number; pages: number };
+  trends: any | null;
+  statistics: any | null;
+  summary: any | null;
+  comparison: any | null;
+  filters: { startDate: string | null; endDate: string | null; sortBy: string; sortOrder: 'asc' | 'desc' };
+  loading: { entries: boolean; create: boolean; update: boolean; delete: boolean; trends: boolean; stats: boolean; summary: boolean; bulkImport: boolean };
+  error: { entries: string | null | undefined; create: string | null | undefined; update: string | null | undefined; delete: string | null | undefined; trends: string | null | undefined; stats: string | null | undefined; summary: string | null | undefined; bulkImport: string | null | undefined };
+};
+
+const initialState: WeightState = {
   entries: [],
   currentEntry: null,
   pagination: {
@@ -46,144 +59,144 @@ const initialState = {
 // Async thunks for API calls
 
 // Get all weight entries
-export const fetchWeightEntries = createAsyncThunk(
+export const fetchWeightEntries = createAsyncThunk<any, Record<string, any> | undefined, { rejectValue: string }>(
   'weight/fetchEntries',
-  async (params = {}, { rejectWithValue }) => {
+  async (params: Record<string, any> = {}, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.getEntries(params);
-      return response.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch weight entries');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch weight entries');
     }
   }
 );
 
 // Get single weight entry
-export const fetchWeightEntry = createAsyncThunk(
+export const fetchWeightEntry = createAsyncThunk<any, string, { rejectValue: string }>(
   'weight/fetchEntry',
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.getEntry(id);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch weight entry');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch weight entry');
     }
   }
 );
 
 // Create weight entry
-export const createWeightEntry = createAsyncThunk(
+export const createWeightEntry = createAsyncThunk<any, any, { rejectValue: string }>(
   'weight/createEntry',
-  async (entryData, { rejectWithValue }) => {
+  async (entryData: any, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.createEntry(entryData);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create weight entry');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to create weight entry');
     }
   }
 );
 
 // Update weight entry
-export const updateWeightEntry = createAsyncThunk(
+export const updateWeightEntry = createAsyncThunk<any, { id: string; data: any }, { rejectValue: string }>(
   'weight/updateEntry',
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.updateEntry(id, data);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update weight entry');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to update weight entry');
     }
   }
 );
 
 // Delete weight entry
-export const deleteWeightEntry = createAsyncThunk(
+export const deleteWeightEntry = createAsyncThunk<string, string, { rejectValue: string }>(
   'weight/deleteEntry',
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       await apiService.weight.deleteEntry(id);
       return id;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete weight entry');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to delete weight entry');
     }
   }
 );
 
 // Get weight trends
-export const fetchWeightTrends = createAsyncThunk(
+export const fetchWeightTrends = createAsyncThunk<any, Record<string, any> | undefined, { rejectValue: string }>(
   'weight/fetchTrends',
-  async (params = {}, { rejectWithValue }) => {
+  async (params: Record<string, any> = {}, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.getTrends(params);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch weight trends');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch weight trends');
     }
   }
 );
 
 // Get weight statistics
-export const fetchWeightStatistics = createAsyncThunk(
+export const fetchWeightStatistics = createAsyncThunk<any, Record<string, any> | undefined, { rejectValue: string }>(
   'weight/fetchStatistics',
-  async (params = {}, { rejectWithValue }) => {
+  async (params: Record<string, any> = {}, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.getStatistics(params);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch weight statistics');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch weight statistics');
     }
   }
 );
 
 // Get weight summary
-export const fetchWeightSummary = createAsyncThunk(
+export const fetchWeightSummary = createAsyncThunk<any, void, { rejectValue: string }>(
   'weight/fetchSummary',
-  async (_, { rejectWithValue }) => {
+  async (_: void, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.getSummary();
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch weight summary');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch weight summary');
     }
   }
 );
 
 // Get latest weight entry
-export const fetchLatestWeightEntry = createAsyncThunk(
+export const fetchLatestWeightEntry = createAsyncThunk<any, void, { rejectValue: string }>(
   'weight/fetchLatest',
-  async (_, { rejectWithValue }) => {
+  async (_: void, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.getLatest();
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch latest weight entry');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch latest weight entry');
     }
   }
 );
 
 // Compare weight entries
-export const compareWeightEntries = createAsyncThunk(
+export const compareWeightEntries = createAsyncThunk<any, { id1: string; id2: string }, { rejectValue: string }>(
   'weight/compareEntries',
-  async ({ id1, id2 }, { rejectWithValue }) => {
+  async ({ id1, id2 }: { id1: string; id2: string }, { rejectWithValue }) => {
     try {
       const response = await apiService.weight.compareEntries(id1, id2);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to compare weight entries');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to compare weight entries');
     }
   }
 );
 
 // Bulk import weight entries
-export const bulkImportWeightEntries = createAsyncThunk(
+export const bulkImportWeightEntries = createAsyncThunk<any, any[], { rejectValue: string }>(
   'weight/bulkImport',
-  async (entries, { rejectWithValue }) => {
+  async (entries: any[], { rejectWithValue }) => {
     try {
       const response = await apiService.weight.bulkImport({ entries });
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to import weight entries');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to import weight entries');
     }
   }
 );
@@ -204,7 +217,7 @@ const weightSlice = createSlice({
     },
     
     // Update filters
-    updateFilters: (state, action) => {
+    updateFilters: (state, action: PayloadAction<Partial<WeightState['filters']>>) => {
       state.filters = { ...state.filters, ...action.payload };
     },
     
@@ -229,7 +242,7 @@ const weightSlice = createSlice({
     },
     
     // Set pagination
-    setPagination: (state, action) => {
+    setPagination: (state, action: PayloadAction<Partial<WeightState['pagination']>>) => {
       state.pagination = { ...state.pagination, ...action.payload };
     }
   },

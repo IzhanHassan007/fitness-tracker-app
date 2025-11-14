@@ -4,27 +4,14 @@
   "description": "Modern Full-Stack Fitness Tracker Application",
   "private": true,
   "workspaces": [
-    "frontend",
-    "backend"
+    "frontend"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:frontend": "cd frontend && npm run start",
-    "start:backend": "cd backend && npm run start",
-    "build": "npm run build:frontend",
-    "build:frontend": "cd frontend && npm run build",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules frontend/.next backend/dist",
-    "clean:win": "rmdir /s /q node_modules frontend\\node_modules backend\\node_modules frontend\\.next backend\\dist",
-    "lint": "cd frontend && npm run lint",
-    "test": "cd backend && npm test",
-    "test:watch": "cd backend && npm test -- --watch"
-  },
-  "devDependencies": {
-    "concurrently": "^9.2.1"
+    "dev": "cd frontend && npm run dev",
+    "start": "cd frontend && npm run start",
+    "build": "cd frontend && npm run build",
+    "clean": "rmdir /s /q node_modules frontend\\node_modules frontend\\.next",
+    "lint": "cd frontend && npm run lint"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -46,5 +33,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/your-username/fitness-tracker-app.git"
+  },
+  "dependencies": {
+    "firebase": "^12.6.0"
   }
 }

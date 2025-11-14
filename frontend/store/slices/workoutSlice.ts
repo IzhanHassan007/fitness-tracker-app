@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import api from '../../services/api';
+import { workoutAPI } from '../../services/firebaseService';
 import toast from 'react-hot-toast';
 
 // Types
@@ -151,15 +151,10 @@ export const fetchWorkouts = createAsyncThunk(
     search?: string;
   } = {}, { rejectWithValue }) => {
     try {
-      const queryParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value.toString());
-      });
-
-      const response = await api.get(`/workouts?${queryParams.toString()}`);
-      return response.data;
+      const data = await workoutAPI.getWorkouts(params);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch workouts';
+      const message = error.message || 'Failed to fetch workouts';
       return rejectWithValue(message);
     }
   }
@@ -169,10 +164,10 @@ export const fetchWorkout = createAsyncThunk(
   'workouts/fetchWorkout',
   async (workoutId: string, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/workouts/${workoutId}`);
-      return response.data.data;
+      const data = await workoutAPI.getWorkout(workoutId);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch workout';
+      const message = error.message || 'Failed to fetch workout';
       return rejectWithValue(message);
     }
   }
@@ -182,11 +177,11 @@ export const createWorkout = createAsyncThunk(
   'workouts/createWorkout',
   async (workoutData: Partial<Workout>, { rejectWithValue }) => {
     try {
-      const response = await api.post('/workouts', workoutData);
+      const data = await workoutAPI.createWorkout(workoutData);
       toast.success('Workout created successfully!');
-      return response.data.data;
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to create workout';
+      const message = error.message || 'Failed to create workout';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -197,11 +192,11 @@ export const updateWorkout = createAsyncThunk(
   'workouts/updateWorkout',
   async ({ id, data }: { id: string; data: Partial<Workout> }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/workouts/${id}`, data);
+      const updated = await workoutAPI.updateWorkout(id, data);
       toast.success('Workout updated successfully!');
-      return response.data.data;
+      return updated;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to update workout';
+      const message = error.message || 'Failed to update workout';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -212,11 +207,11 @@ export const deleteWorkout = createAsyncThunk(
   'workouts/deleteWorkout',
   async (workoutId: string, { rejectWithValue }) => {
     try {
-      await api.delete(`/workouts/${workoutId}`);
+      await workoutAPI.deleteWorkout(workoutId);
       toast.success('Workout deleted successfully!');
       return workoutId;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to delete workout';
+      const message = error.message || 'Failed to delete workout';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -227,11 +222,11 @@ export const startWorkout = createAsyncThunk(
   'workouts/startWorkout',
   async (workoutId: string, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/workouts/${workoutId}/start`);
+      const data = await workoutAPI.startWorkout(workoutId);
       toast.success('Workout started!');
-      return response.data.data;
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to start workout';
+      const message = error.message || 'Failed to start workout';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -242,11 +237,11 @@ export const completeWorkout = createAsyncThunk(
   'workouts/completeWorkout',
   async (workoutId: string, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/workouts/${workoutId}/complete`);
+      const data = await workoutAPI.completeWorkout(workoutId);
       toast.success('Workout completed! Great job! 💪');
-      return response.data.data;
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to complete workout';
+      const message = error.message || 'Failed to complete workout';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -257,11 +252,11 @@ export const addExercise = createAsyncThunk(
   'workouts/addExercise',
   async ({ workoutId, exercise }: { workoutId: string; exercise: Partial<Exercise> }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/workouts/${workoutId}/exercises`, exercise);
+      const data = await workoutAPI.addExercise(workoutId, exercise);
       toast.success('Exercise added to workout!');
-      return response.data.data;
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to add exercise';
+      const message = error.message || 'Failed to add exercise';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -280,10 +275,10 @@ export const updateExercise = createAsyncThunk(
     exercise: Partial<Exercise> 
   }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/workouts/${workoutId}/exercises/${exerciseId}`, exercise);
-      return response.data.data;
+      const data = await workoutAPI.updateExercise(workoutId, exerciseId, exercise);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to update exercise';
+      const message = error.message || 'Failed to update exercise';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -294,11 +289,11 @@ export const deleteExercise = createAsyncThunk(
   'workouts/deleteExercise',
   async ({ workoutId, exerciseId }: { workoutId: string; exerciseId: string }, { rejectWithValue }) => {
     try {
-      const response = await api.delete(`/workouts/${workoutId}/exercises/${exerciseId}`);
+      const data = await workoutAPI.deleteExercise(workoutId, exerciseId);
       toast.success('Exercise removed from workout');
-      return response.data.data;
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to delete exercise';
+      const message = error.message || 'Failed to delete exercise';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -309,15 +304,10 @@ export const fetchWorkoutStats = createAsyncThunk(
   'workouts/fetchWorkoutStats',
   async (params: { startDate?: string; endDate?: string } = {}, { rejectWithValue }) => {
     try {
-      const queryParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value);
-      });
-
-      const response = await api.get(`/workouts/stats/summary?${queryParams.toString()}`);
-      return response.data.data;
+      const data = await workoutAPI.getStats(params);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch workout statistics';
+      const message = error.message || 'Failed to fetch workout statistics';
       return rejectWithValue(message);
     }
   }
@@ -327,10 +317,10 @@ export const fetchWorkoutTemplates = createAsyncThunk(
   'workouts/fetchWorkoutTemplates',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/workouts/templates/list');
-      return response.data.data;
+      const data = await workoutAPI.getTemplates();
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch templates';
+      const message = error.message || 'Failed to fetch templates';
       return rejectWithValue(message);
     }
   }
@@ -340,11 +330,11 @@ export const createWorkoutFromTemplate = createAsyncThunk(
   'workouts/createWorkoutFromTemplate',
   async ({ templateId, name }: { templateId: string; name?: string }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/workouts/templates/${templateId}/create`, { name });
+      const data = await workoutAPI.createFromTemplate(templateId, { name });
       toast.success('Workout created from template!');
-      return response.data.data;
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to create workout from template';
+      const message = error.message || 'Failed to create workout from template';
       toast.error(message);
       return rejectWithValue(message);
     }

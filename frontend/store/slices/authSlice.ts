@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { authAPI } from '../../services/api';
+import { authAPI } from '../../services/firebaseService';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 
 // Types
 export interface User {
-  id: string;
+  _id: string;
+  id?: string;
   name: string;
   email: string;
   avatar?: string;
@@ -13,9 +14,9 @@ export interface User {
   gender?: 'male' | 'female' | 'other' | 'prefer-not-to-say';
   height?: {
     value: number;
-    unit: 'cm' | 'ft';
+    unit: string;
   };
-  activityLevel?: 'sedentary' | 'light' | 'moderate' | 'active' | 'very-active';
+  activityLevel?: string;
   fitnessGoals?: string[];
   age?: number;
   lastLogin?: string;
@@ -45,7 +46,22 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await authAPI.login(credentials);
+      const withTimeout = async <T>(promise: Promise<T>, ms = 2500): Promise<T> => {
+        return new Promise<T>((resolve, reject) => {
+          const t = setTimeout(() => reject(new Error('Login timed out. Please check your connection.')), ms);
+          promise
+            .then((v) => {
+              clearTimeout(t);
+              resolve(v);
+            })
+            .catch((e) => {
+              clearTimeout(t);
+              reject(e);
+            });
+        });
+      };
+
+      const response = await withTimeout(authAPI.login(credentials));
       
       if (response.success) {
         // Store token in cookies
@@ -53,12 +69,30 @@ export const loginUser = createAsyncThunk(
         toast.success('Login successful!');
         return { user: response.user, token: response.token };
       } else {
-        return rejectWithValue(response.message || 'Login failed');
+        const code: string | undefined = (response as any).code;
+        const mapped = code === 'auth/invalid-email' ? 'Invalid email address' :
+          code === 'auth/user-not-found' ? 'No account found for this email' :
+          code === 'auth/wrong-password' ? 'Incorrect password' :
+          code === 'auth/invalid-api-key' ? 'Invalid Firebase API key configuration' :
+          code === 'auth/network-request-failed' ? 'Network error. Check your connection' :
+          code === 'auth/operation-not-allowed' ? 'Email/password sign-in is disabled in Firebase' :
+          code === 'auth/unauthorized-domain' ? 'Domain not authorized in Firebase Authentication' :
+          response.message || 'Login failed';
+        toast.error(mapped);
+        return rejectWithValue(mapped);
       }
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Login failed';
-      toast.error(message);
-      return rejectWithValue(message);
+      const code: string | undefined = error?.code;
+      const mapped = code === 'auth/invalid-email' ? 'Invalid email address' :
+        code === 'auth/user-not-found' ? 'No account found for this email' :
+        code === 'auth/wrong-password' ? 'Incorrect password' :
+        code === 'auth/invalid-api-key' ? 'Invalid Firebase API key configuration' :
+        code === 'auth/network-request-failed' ? 'Network error. Check your connection' :
+        code === 'auth/operation-not-allowed' ? 'Email/password sign-in is disabled in Firebase' :
+        code === 'auth/unauthorized-domain' ? 'Domain not authorized in Firebase Authentication' :
+        error.response?.data?.message || error.message || 'Login failed';
+      toast.error(mapped);
+      return rejectWithValue(mapped);
     }
   }
 );
@@ -76,7 +110,22 @@ export const signupUser = createAsyncThunk(
     fitnessGoals?: string[];
   }, { rejectWithValue }) => {
     try {
-      const response = await authAPI.signup(userData);
+      const withTimeout = async <T>(promise: Promise<T>, ms = 5000): Promise<T> => {
+        return new Promise<T>((resolve, reject) => {
+          const t = setTimeout(() => reject(new Error('Signup timed out. Please check your connection.')), ms);
+          promise
+            .then((v) => {
+              clearTimeout(t);
+              resolve(v);
+            })
+            .catch((e) => {
+              clearTimeout(t);
+              reject(e);
+            });
+        });
+      };
+
+      const response = await withTimeout(authAPI.signup(userData));
       
       if (response.success) {
         // Store token in cookies
@@ -84,12 +133,28 @@ export const signupUser = createAsyncThunk(
         toast.success('Account created successfully!');
         return { user: response.user, token: response.token };
       } else {
-        return rejectWithValue(response.message || 'Signup failed');
+        const code: string | undefined = (response as any).code;
+        const mapped = code === 'auth/email-already-in-use' ? 'Email already in use' :
+          code === 'auth/invalid-email' ? 'Invalid email address' :
+          code === 'auth/weak-password' ? 'Password must be at least 6 characters' :
+          code === 'auth/invalid-api-key' ? 'Invalid Firebase API key configuration' :
+          code === 'auth/operation-not-allowed' ? 'Email/password sign-up is disabled in Firebase' :
+          code === 'auth/unauthorized-domain' ? 'Domain not authorized in Firebase Authentication' :
+          response.message || 'Signup failed';
+        toast.error(mapped);
+        return rejectWithValue(mapped);
       }
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Signup failed';
-      toast.error(message);
-      return rejectWithValue(message);
+      const code: string | undefined = error?.code;
+      const mapped = code === 'auth/email-already-in-use' ? 'Email already in use' :
+        code === 'auth/invalid-email' ? 'Invalid email address' :
+        code === 'auth/weak-password' ? 'Password must be at least 6 characters' :
+        code === 'auth/invalid-api-key' ? 'Invalid Firebase API key configuration' :
+        code === 'auth/operation-not-allowed' ? 'Email/password sign-up is disabled in Firebase' :
+        code === 'auth/unauthorized-domain' ? 'Domain not authorized in Firebase Authentication' :
+        error.response?.data?.message || error.message || 'Signup failed';
+      toast.error(mapped);
+      return rejectWithValue(mapped);
     }
   }
 );
@@ -122,7 +187,7 @@ export const updateProfile = createAsyncThunk(
         toast.success('Profile updated successfully!');
         return response.user;
       } else {
-        return rejectWithValue(response.message || 'Update failed');
+        return rejectWithValue('Update failed');
       }
     } catch (error: any) {
       const message = error.response?.data?.message || error.message || 'Update failed';

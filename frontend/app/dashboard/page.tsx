@@ -127,10 +127,10 @@ const Dashboard = () => {
           <div className="p-8">
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {user?.firstName || 'User'}!
+                Welcome back, {user?.name || 'User'}!
               </h1>
               <p className="text-gray-600 mt-2">
-                Here's your fitness journey overview
+                Here’s your fitness journey overview
               </p>
             </div>
 
@@ -404,7 +404,7 @@ const Dashboard = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">
-                  {user?.firstName} {user?.lastName}
+                  {user?.name || 'User'}
                 </p>
                 <p className="text-xs text-gray-500 truncate">{user?.email}</p>
               </div>

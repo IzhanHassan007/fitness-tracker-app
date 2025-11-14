@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import api from '../../services/api';
+import { nutritionAPI } from '../../services/firebaseService';
 import toast from 'react-hot-toast';
 
 // Types
@@ -253,15 +253,10 @@ export const fetchMeals = createAsyncThunk(
     search?: string;
   } = {}, { rejectWithValue }) => {
     try {
-      const queryParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value.toString());
-      });
-
-      const response = await api.get(`/nutrition/meals?${queryParams.toString()}`);
-      return response.data;
+      const data = await nutritionAPI.getMeals(params);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch meals';
+      const message = error.message || 'Failed to fetch meals';
       return rejectWithValue(message);
     }
   }
@@ -271,10 +266,10 @@ export const fetchMeal = createAsyncThunk(
   'nutrition/fetchMeal',
   async (mealId: string, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/nutrition/meals/${mealId}`);
-      return response.data.data;
+      const data = await nutritionAPI.getMeal(mealId);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch meal';
+      const message = error.message || 'Failed to fetch meal';
       return rejectWithValue(message);
     }
   }
@@ -284,11 +279,11 @@ export const createMeal = createAsyncThunk(
   'nutrition/createMeal',
   async (mealData: Partial<Meal>, { rejectWithValue }) => {
     try {
-      const response = await api.post('/nutrition/meals', mealData);
+      const data = await nutritionAPI.createMeal(mealData);
       toast.success('Meal logged successfully!');
-      return response.data.data;
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to create meal';
+      const message = error.message || 'Failed to create meal';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -299,11 +294,11 @@ export const updateMeal = createAsyncThunk(
   'nutrition/updateMeal',
   async ({ id, data }: { id: string; data: Partial<Meal> }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/nutrition/meals/${id}`, data);
+      const updated = await nutritionAPI.updateMeal(id, data);
       toast.success('Meal updated successfully!');
-      return response.data.data;
+      return updated;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to update meal';
+      const message = error.message || 'Failed to update meal';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -314,11 +309,11 @@ export const deleteMeal = createAsyncThunk(
   'nutrition/deleteMeal',
   async (mealId: string, { rejectWithValue }) => {
     try {
-      await api.delete(`/nutrition/meals/${mealId}`);
+      await nutritionAPI.deleteMeal(mealId);
       toast.success('Meal deleted successfully!');
       return mealId;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to delete meal';
+      const message = error.message || 'Failed to delete meal';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -329,10 +324,10 @@ export const fetchDailyNutrition = createAsyncThunk(
   'nutrition/fetchDailyNutrition',
   async (date: string, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/nutrition/daily/${date}`);
-      return { date, data: response.data.data };
+      const data = await nutritionAPI.getDailyNutrition(date);
+      return { date, data };
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch daily nutrition';
+      const message = error.message || 'Failed to fetch daily nutrition';
       return rejectWithValue(message);
     }
   }
@@ -350,7 +345,7 @@ export const updateDailyNutritionGoals = createAsyncThunk(
     notes?: string;
   }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/nutrition/daily/${date}/goals`, {
+      const data = await nutritionAPI.updateDailyGoals(date, {
         goals,
         waterIntake,
         supplements,
@@ -359,9 +354,9 @@ export const updateDailyNutritionGoals = createAsyncThunk(
         notes
       });
       toast.success('Daily nutrition updated successfully!');
-      return { date, data: response.data.data };
+      return { date, data };
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to update daily nutrition';
+      const message = error.message || 'Failed to update daily nutrition';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -376,11 +371,11 @@ export const addWaterIntake = createAsyncThunk(
     unit?: string;
   }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/nutrition/daily/${date}/water`, { amount, unit });
+      const data = await nutritionAPI.addWaterIntake(date, { amount, unit });
       toast.success('Water intake logged!');
-      return { date, data: response.data.data };
+      return { date, data };
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to add water intake';
+      const message = error.message || 'Failed to add water intake';
       toast.error(message);
       return rejectWithValue(message);
     }
@@ -391,15 +386,10 @@ export const fetchNutritionStats = createAsyncThunk(
   'nutrition/fetchNutritionStats',
   async (params: { startDate?: string; endDate?: string } = {}, { rejectWithValue }) => {
     try {
-      const queryParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value);
-      });
-
-      const response = await api.get(`/nutrition/stats/summary?${queryParams.toString()}`);
-      return response.data.data;
+      const data = await nutritionAPI.getStats(params);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch nutrition statistics';
+      const message = error.message || 'Failed to fetch nutrition statistics';
       return rejectWithValue(message);
     }
   }
@@ -409,10 +399,10 @@ export const fetchNutritionRecommendations = createAsyncThunk(
   'nutrition/fetchNutritionRecommendations',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/nutrition/goals/recommendations');
-      return response.data.data;
+      const data = await nutritionAPI.getRecommendations();
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch nutrition recommendations';
+      const message = error.message || 'Failed to fetch nutrition recommendations';
       return rejectWithValue(message);
     }
   }
@@ -422,15 +412,10 @@ export const fetchMealSuggestions = createAsyncThunk(
   'nutrition/fetchMealSuggestions',
   async (params: { mealType?: string; calories?: number } = {}, { rejectWithValue }) => {
     try {
-      const queryParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value.toString());
-      });
-
-      const response = await api.get(`/nutrition/suggestions?${queryParams.toString()}`);
-      return response.data.data;
+      const data = await nutritionAPI.getSuggestions(params);
+      return data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch meal suggestions';
+      const message = error.message || 'Failed to fetch meal suggestions';
       return rejectWithValue(message);
     }
   }

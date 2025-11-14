@@ -31,7 +31,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
   const [showProgressInput, setShowProgressInput] = useState(false);
 
   // Calculate progress percentage
-  const progressPercent = goal.targetValue 
+  const progressPercent = goal.targetValue && (goal.currentValue ?? null) !== null
     ? Math.min((goal.currentValue / goal.targetValue) * 100, 100)
     : 0;
 

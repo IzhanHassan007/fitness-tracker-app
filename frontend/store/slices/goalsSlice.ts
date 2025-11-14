@@ -1,8 +1,20 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { apiService } from '../../services/api';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { apiService } from '../../services/firebaseService';
 
 // Initial state
-const initialState = {
+type GoalsState = {
+  goals: any[];
+  currentGoal: any | null;
+  pagination: { page: number; limit: number; total: number; pages: number };
+  analytics: any | null;
+  summary: any | null;
+  insights: any | null;
+  filters: { status: string | null; type: string | null; priority: string | null; category: string | null; sortBy: string; sortOrder: 'asc' | 'desc' };
+  loading: { goals: boolean; create: boolean; update: boolean; delete: boolean; progress: boolean; status: boolean; analytics: boolean; summary: boolean; insights: boolean; sync: boolean };
+  error: { goals: string | null | undefined; create: string | null | undefined; update: string | null | undefined; delete: string | null | undefined; progress: string | null | undefined; status: string | null | undefined; analytics: string | null | undefined; summary: string | null | undefined; insights: string | null | undefined; sync: string | null | undefined };
+};
+
+const initialState: GoalsState = {
   goals: [],
   currentGoal: null,
   pagination: {
@@ -51,144 +63,144 @@ const initialState = {
 // Async thunks for API calls
 
 // Get all goals
-export const fetchGoals = createAsyncThunk(
+export const fetchGoals = createAsyncThunk<any, Record<string, any> | undefined, { rejectValue: string }>(
   'goals/fetchGoals',
-  async (params = {}, { rejectWithValue }) => {
+  async (params: Record<string, any> = {}, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.getGoals(params);
-      return response.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch goals');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch goals');
     }
   }
 );
 
 // Get single goal
-export const fetchGoal = createAsyncThunk(
+export const fetchGoal = createAsyncThunk<any, string, { rejectValue: string }>(
   'goals/fetchGoal',
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.getGoal(id);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch goal');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch goal');
     }
   }
 );
 
 // Create goal
-export const createGoal = createAsyncThunk(
+export const createGoal = createAsyncThunk<any, any, { rejectValue: string }>(
   'goals/createGoal',
-  async (goalData, { rejectWithValue }) => {
+  async (goalData: any, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.createGoal(goalData);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create goal');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to create goal');
     }
   }
 );
 
 // Update goal
-export const updateGoal = createAsyncThunk(
+export const updateGoal = createAsyncThunk<any, { id: string; data: any }, { rejectValue: string }>(
   'goals/updateGoal',
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.updateGoal(id, data);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update goal');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to update goal');
     }
   }
 );
 
 // Delete goal
-export const deleteGoal = createAsyncThunk(
+export const deleteGoal = createAsyncThunk<string, string, { rejectValue: string }>(
   'goals/deleteGoal',
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       await apiService.goals.deleteGoal(id);
       return id;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete goal');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to delete goal');
     }
   }
 );
 
 // Update goal progress
-export const updateGoalProgress = createAsyncThunk(
+export const updateGoalProgress = createAsyncThunk<any, { id: string; progressData: any }, { rejectValue: string }>(
   'goals/updateProgress',
-  async ({ id, progressData }, { rejectWithValue }) => {
+  async ({ id, progressData }: { id: string; progressData: any }, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.updateProgress(id, progressData);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update goal progress');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to update goal progress');
     }
   }
 );
 
 // Update goal status
-export const updateGoalStatus = createAsyncThunk(
+export const updateGoalStatus = createAsyncThunk<any, { id: string; status: string; reason?: string }, { rejectValue: string }>(
   'goals/updateStatus',
-  async ({ id, status, reason }, { rejectWithValue }) => {
+  async ({ id, status, reason }: { id: string; status: string; reason?: string }, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.updateStatus(id, { status, reason });
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update goal status');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to update goal status');
     }
   }
 );
 
 // Get goal analytics
-export const fetchGoalAnalytics = createAsyncThunk(
+export const fetchGoalAnalytics = createAsyncThunk<any, void, { rejectValue: string }>(
   'goals/fetchAnalytics',
-  async (_, { rejectWithValue }) => {
+  async (_: void, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.getAnalytics();
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch goal analytics');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch goal analytics');
     }
   }
 );
 
 // Get goal summary
-export const fetchGoalSummary = createAsyncThunk(
+export const fetchGoalSummary = createAsyncThunk<any, void, { rejectValue: string }>(
   'goals/fetchSummary',
-  async (_, { rejectWithValue }) => {
+  async (_: void, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.getSummary();
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch goal summary');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch goal summary');
     }
   }
 );
 
 // Get goal insights
-export const fetchGoalInsights = createAsyncThunk(
+export const fetchGoalInsights = createAsyncThunk<any, string, { rejectValue: string }>(
   'goals/fetchInsights',
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.getInsights(id);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch goal insights');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to fetch goal insights');
     }
   }
 );
 
 // Sync goal with actual data
-export const syncGoal = createAsyncThunk(
+export const syncGoal = createAsyncThunk<any, string, { rejectValue: string }>(
   'goals/syncGoal',
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await apiService.goals.syncGoal(id);
-      return response.data.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to sync goal');
+      return rejectWithValue((error as any).response?.data?.message || 'Failed to sync goal');
     }
   }
 );
@@ -217,7 +229,7 @@ const goalsSlice = createSlice({
     },
     
     // Update filters
-    updateFilters: (state, action) => {
+    updateFilters: (state, action: PayloadAction<Partial<GoalsState['filters']>>) => {
       state.filters = { ...state.filters, ...action.payload };
     },
     
@@ -242,7 +254,7 @@ const goalsSlice = createSlice({
     },
     
     // Set pagination
-    setPagination: (state, action) => {
+    setPagination: (state, action: PayloadAction<Partial<GoalsState['pagination']>>) => {
       state.pagination = { ...state.pagination, ...action.payload };
     },
     
@@ -581,7 +593,7 @@ export const selectUpcomingDeadlines = (state) => {
     goal.status === 'active' &&
     new Date(goal.targetDate) <= thirtyDaysFromNow &&
     new Date(goal.targetDate) >= new Date()
-  ).sort((a, b) => new Date(a.targetDate) - new Date(b.targetDate));
+  ).sort((a, b) => new Date(a.targetDate).getTime() - new Date(b.targetDate).getTime());
 };
 
 // Export reducer

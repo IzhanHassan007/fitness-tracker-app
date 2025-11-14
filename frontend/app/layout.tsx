@@ -12,8 +12,7 @@ export const metadata: Metadata = {
   keywords: 'fitness, tracker, health, workout, nutrition, goals',
   authors: [{ name: 'FitTracker Team' }],
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: '/favicon.svg',
   },
   openGraph: {
     title: 'FitTracker - Your Personal Fitness Journey',
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
     url: 'https://fittracker.com',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
         alt: 'FitTracker App',
@@ -33,7 +32,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FitTracker - Your Personal Fitness Journey',
     description: 'Track your workouts, nutrition, and fitness goals with our comprehensive fitness tracker app.',
-    images: ['/twitter-image.png'],
+    images: ['/twitter-image.svg'],
   },
 };
 
@@ -49,7 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${inter.className} antialiased`}>
         <Providers>
           {children}

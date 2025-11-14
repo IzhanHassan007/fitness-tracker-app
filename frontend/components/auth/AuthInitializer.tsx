@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { RootState, AppDispatch } from '../../store';
 import { initializeAuth, getCurrentUser } from '../../store/slices/authSlice';
 
 interface AuthInitializerProps {
@@ -10,7 +10,7 @@ interface AuthInitializerProps {
 }
 
 export default function AuthInitializer({ children }: AuthInitializerProps) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { token, user, isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {

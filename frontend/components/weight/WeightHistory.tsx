@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import {
@@ -24,7 +24,14 @@ const WeightHistory: React.FC = () => {
 
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<any>(null);
-  const [localFilters, setLocalFilters] = useState({
+  interface LocalFilters {
+    startDate: string;
+    endDate: string;
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+  }
+
+  const [localFilters, setLocalFilters] = useState<LocalFilters>({
     startDate: '',
     endDate: '',
     sortBy: 'measuredAt',
@@ -32,19 +39,18 @@ const WeightHistory: React.FC = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    // Load entries when component mounts or filters change
-    loadEntries();
-  }, [dispatch, filters, pagination.page]);
-
-  const loadEntries = () => {
+  const loadEntries = useCallback(() => {
     const params = {
       ...filters,
       page: pagination.page,
       limit: pagination.limit
     };
     dispatch(fetchWeightEntries(params));
-  };
+  }, [dispatch, filters, pagination.page, pagination.limit]);
+
+  useEffect(() => {
+    loadEntries();
+  }, [loadEntries]);
 
   const handleFilterChange = () => {
     const newFilters = {
@@ -401,7 +407,7 @@ const WeightHistory: React.FC = () => {
       </div>
 
       {/* Pagination */}
-      {pagination.pages > 1 && (
+      {(pagination.pages ?? 0) > 1 && (
         <div className="px-6 py-4 border-t border-gray-200">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">
@@ -418,11 +424,11 @@ const WeightHistory: React.FC = () => {
               </button>
               
               <div className="flex items-center space-x-1">
-                {[...Array(pagination.pages)].map((_, i) => {
+                {[...Array(pagination.pages ?? 0)].map((_, i) => {
                   const page = i + 1;
                   if (
                     page === 1 ||
-                    page === pagination.pages ||
+                    page === (pagination.pages ?? 0) ||
                     (page >= pagination.page - 1 && page <= pagination.page + 1)
                   ) {
                     return (
@@ -450,7 +456,7 @@ const WeightHistory: React.FC = () => {
               
               <button
                 onClick={() => handlePageChange(pagination.page + 1)}
-                disabled={pagination.page === pagination.pages}
+                disabled={pagination.page === (pagination.pages ?? 0)}
                 className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next

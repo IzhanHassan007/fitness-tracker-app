@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, Activity, Zap } from 'lucide-react';
-import { RootState } from '../../store';
+import { RootState, AppDispatch } from '../../store';
 import { loginUser, clearError } from '../../store/slices/authSlice';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
@@ -18,7 +18,7 @@ interface LoginFormData {
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const { isLoading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
 

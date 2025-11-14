@@ -37,7 +37,7 @@ const GoalsDashboard: React.FC = () => {
     // Load dashboard data
     dispatch(fetchGoalSummary());
     dispatch(fetchGoalAnalytics());
-  }, [dispatch]);
+  }, [dispatch, fetchGoalSummary, fetchGoalAnalytics]);
 
   const handleFormSuccess = () => {
     setShowCreateForm(false);
@@ -190,7 +190,7 @@ const GoalsDashboard: React.FC = () => {
                         <span className="text-gray-600 capitalize">
                           {type.replace('-', ' ')}:
                         </span>
-                        <span className="font-medium">{count}</span>
+                        <span className="font-medium">{count as number}</span>
                       </div>
                     ))}
                   </div>

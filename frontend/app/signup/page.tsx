@@ -10,7 +10,7 @@ import {
   Eye, EyeOff, Mail, Lock, User, Calendar, Activity, 
   ChevronRight, ChevronLeft, Target, Zap 
 } from 'lucide-react';
-import { RootState } from '../../store';
+import { RootState, AppDispatch } from '../../store';
 import { signupUser, clearError } from '../../store/slices/authSlice';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
@@ -49,7 +49,7 @@ export default function SignupPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const { isLoading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
 
@@ -79,7 +79,7 @@ export default function SignupPage() {
   }, [dispatch]);
 
   const nextStep = async () => {
-    const fieldsToValidate = currentStep === 1 
+    const fieldsToValidate: (keyof SignupFormData)[] = currentStep === 1 
       ? ['name', 'email', 'password', 'confirmPassword'] 
       : [];
 

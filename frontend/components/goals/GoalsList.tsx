@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import {
@@ -20,6 +20,15 @@ interface GoalsListProps {
   compactView?: boolean;
 }
 
+interface LocalFilters {
+  status: string;
+  type: string;
+  priority: string;
+  category: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
 const GoalsList: React.FC<GoalsListProps> = ({
   viewMode = 'grid',
   showFilters = true,
@@ -35,7 +44,7 @@ const GoalsList: React.FC<GoalsListProps> = ({
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<any>(null);
   const [currentViewMode, setCurrentViewMode] = useState<'grid' | 'list'>(viewMode);
-  const [localFilters, setLocalFilters] = useState({
+  const [localFilters, setLocalFilters] = useState<LocalFilters>({
     status: '',
     type: '',
     priority: '',
@@ -45,19 +54,18 @@ const GoalsList: React.FC<GoalsListProps> = ({
   });
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    // Load goals when component mounts or filters change
-    loadGoals();
-  }, [dispatch, filters, pagination.page]);
-
-  const loadGoals = () => {
+  const loadGoals = useCallback(() => {
     const params = {
       ...filters,
       page: pagination.page,
       limit: pagination.limit
     };
     dispatch(fetchGoals(params));
-  };
+  }, [dispatch, filters, pagination.page, pagination.limit]);
+
+  useEffect(() => {
+    loadGoals();
+  }, [loadGoals]);
 
   const handleFilterChange = () => {
     const newFilters = {
@@ -321,7 +329,7 @@ const GoalsList: React.FC<GoalsListProps> = ({
         </span>
         {pagination.total > pagination.limit && (
           <span>
-            Page {pagination.page} of {pagination.pages}
+            Page {pagination.page} of {pagination.pages ?? 0}
           </span>
         )}
       </div>
@@ -410,7 +418,7 @@ const GoalsList: React.FC<GoalsListProps> = ({
       )}
 
       {/* Pagination */}
-      {pagination.pages > 1 && (
+      {(pagination.pages ?? 0) > 1 && (
         <div className="flex items-center justify-center space-x-2 pt-6">
           <button
             onClick={() => handlePageChange(pagination.page - 1)}
@@ -421,11 +429,11 @@ const GoalsList: React.FC<GoalsListProps> = ({
           </button>
           
           <div className="flex items-center space-x-1">
-            {[...Array(pagination.pages)].map((_, i) => {
+            {[...Array(pagination.pages ?? 0)].map((_, i) => {
               const page = i + 1;
               if (
                 page === 1 ||
-                page === pagination.pages ||
+                page === (pagination.pages ?? 0) ||
                 (page >= pagination.page - 1 && page <= pagination.page + 1)
               ) {
                 return (
@@ -453,7 +461,7 @@ const GoalsList: React.FC<GoalsListProps> = ({
           
           <button
             onClick={() => handlePageChange(pagination.page + 1)}
-            disabled={pagination.page === pagination.pages}
+            disabled={pagination.page === (pagination.pages ?? 0)}
             className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
