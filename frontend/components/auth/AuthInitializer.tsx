@@ -11,7 +11,10 @@ interface AuthInitializerProps {
 
 export default function AuthInitializer({ children }: AuthInitializerProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const { token, user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const auth = useSelector((state: RootState) => state.auth);
+  const token = auth?.token;
+  const user = auth?.user;
+  const isAuthenticated = !!auth?.isAuthenticated;
 
   useEffect(() => {
     // Initialize auth state from cookies

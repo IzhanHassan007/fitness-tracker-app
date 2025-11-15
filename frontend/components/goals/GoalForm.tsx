@@ -201,11 +201,11 @@ const GoalForm: React.FC<GoalFormProps> = ({
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, values, setFieldValue, errors: formErrors }) => {
+        {({ isSubmitting, values, setFieldValue, errors: formErrors, handleSubmit }) => {
           const currentGoalConfig = getGoalTypeConfig(values.type);
 
           return (
-            <Form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Goal Type */}
               <div>
                 <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
@@ -234,7 +234,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                   <option value="custom">Custom Goal</option>
                 </Field>
                 <p className="mt-1 text-sm text-gray-500">{currentGoalConfig.description}</p>
-                <ErrorMessage name="type" component="div" className="text-red-600 text-sm mt-1" />
+                {formErrors.type && (
+                  <div className="text-red-600 text-sm mt-1">{String(formErrors.type)}</div>
+                )}
               </div>
 
               {/* Title and Priority */}
@@ -249,7 +251,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                     placeholder="Enter your goal title"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
-                  <ErrorMessage name="title" component="div" className="text-red-600 text-sm mt-1" />
+                  {formErrors.title && (
+                    <div className="text-red-600 text-sm mt-1">{String(formErrors.title)}</div>
+                  )}
                 </div>
 
                 <div>
@@ -265,7 +269,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                   </Field>
-                  <ErrorMessage name="priority" component="div" className="text-red-600 text-sm mt-1" />
+                  {formErrors.priority && (
+                    <div className="text-red-600 text-sm mt-1">{String(formErrors.priority)}</div>
+                  )}
                 </div>
               </div>
 
@@ -281,7 +287,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                   placeholder="Describe your goal in detail..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                 />
-                <ErrorMessage name="description" component="div" className="text-red-600 text-sm mt-1" />
+                {formErrors.description && (
+                  <div className="text-red-600 text-sm mt-1">{String(formErrors.description)}</div>
+                )}
               </div>
 
               {/* Target Values and Date */}
@@ -299,7 +307,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                         placeholder="Target"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
-                      <ErrorMessage name="targetValue" component="div" className="text-red-600 text-sm mt-1" />
+                      {formErrors.targetValue && (
+                        <div className="text-red-600 text-sm mt-1">{String(formErrors.targetValue)}</div>
+                      )}
                     </div>
 
                     <div>
@@ -313,7 +323,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                         placeholder="Current"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
-                      <ErrorMessage name="currentValue" component="div" className="text-red-600 text-sm mt-1" />
+                      {formErrors.currentValue && (
+                        <div className="text-red-600 text-sm mt-1">{String(formErrors.currentValue)}</div>
+                      )}
                     </div>
 
                     <div>
@@ -326,7 +338,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                         placeholder="Unit"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
-                      <ErrorMessage name="unit" component="div" className="text-red-600 text-sm mt-1" />
+                      {formErrors.unit && (
+                        <div className="text-red-600 text-sm mt-1">{String(formErrors.unit)}</div>
+                      )}
                     </div>
                   </>
                 )}
@@ -340,7 +354,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                     type="date"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
-                  <ErrorMessage name="targetDate" component="div" className="text-red-600 text-sm mt-1" />
+                  {formErrors.targetDate && (
+                    <div className="text-red-600 text-sm mt-1">{String(formErrors.targetDate)}</div>
+                  )}
                 </div>
               </div>
 
@@ -364,7 +380,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
                       </Field>
-                      <ErrorMessage name="frequency.type" component="div" className="text-red-600 text-sm mt-1" />
+                      {(formErrors as any)?.frequency?.type && (
+                        <div className="text-red-600 text-sm mt-1">{String((formErrors as any)?.frequency?.type)}</div>
+                      )}
                     </div>
 
                     {values.frequency.type !== 'once' && (
@@ -379,7 +397,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                           placeholder="How many times"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
-                        <ErrorMessage name="frequency.target" component="div" className="text-red-600 text-sm mt-1" />
+                        {(formErrors as any)?.frequency?.target && (
+                          <div className="text-red-600 text-sm mt-1">{String((formErrors as any)?.frequency?.target)}</div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -403,7 +423,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                     <option value="lifestyle">Lifestyle</option>
                     <option value="performance">Performance</option>
                   </Field>
-                  <ErrorMessage name="category" component="div" className="text-red-600 text-sm mt-1" />
+                  {formErrors.category && (
+                    <div className="text-red-600 text-sm mt-1">{String(formErrors.category)}</div>
+                  )}
                 </div>
               </div>
 
@@ -419,7 +441,9 @@ const GoalForm: React.FC<GoalFormProps> = ({
                   placeholder="Any additional notes about this goal..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                 />
-                <ErrorMessage name="notes" component="div" className="text-red-600 text-sm mt-1" />
+                {formErrors.notes && (
+                  <div className="text-red-600 text-sm mt-1">{String(formErrors.notes)}</div>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -451,7 +475,7 @@ const GoalForm: React.FC<GoalFormProps> = ({
                   )}
                 </button>
               </div>
-            </Form>
+            </form>
           );
         }}
       </Formik>

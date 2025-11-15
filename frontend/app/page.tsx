@@ -9,7 +9,7 @@ import { RootState } from '../store';
 import Link from 'next/link';
 
 export default function HomePage() {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const isAuthenticated = !!useSelector((state: RootState) => state.auth?.isAuthenticated);
   const router = useRouter();
 
   useEffect(() => {

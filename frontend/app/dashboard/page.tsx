@@ -37,10 +37,15 @@ type TabType = 'overview' | 'workouts' | 'nutrition' | 'weight' | 'weight-histor
 const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.auth?.user);
   
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  if (!user) {
+    router.push('/login');
+    return null;
+  }
 
   const handleLogout = () => {
     dispatch(logout());

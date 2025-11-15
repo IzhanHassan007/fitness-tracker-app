@@ -14,6 +14,18 @@ import {
   Bar
 } from 'recharts';
 
+const Responsive = ResponsiveContainer as any;
+const CChart = ComposedChart as any;
+const CGrid = CartesianGrid as any;
+const XAx = XAxis as any;
+const YAx = YAxis as any;
+const TTip = Tooltip as any;
+const Lgd = Legend as any;
+const Ref = ReferenceLine as any;
+const Lne = Line as any;
+const Brsh = Brush as any;
+const BrBar = Bar as any;
+
 interface WeightChartProps {
   data: any[];
   showBodyFat?: boolean;
@@ -202,16 +214,16 @@ const WeightChart: React.FC<WeightChartProps> = ({
       </div>
 
       {/* Chart */}
-      <ResponsiveContainer width="100%" height={height}>
-        <ComposedChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis 
+      <Responsive width="100%" height={height}>
+        <CChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <CGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <XAx 
             dataKey="date" 
             stroke="#666"
             tick={{ fontSize: 12 }}
             tickLine={{ stroke: '#ccc' }}
           />
-          <YAxis 
+          <YAx 
             yAxisId="weight"
             domain={['dataMin - 2', 'dataMax + 2']}
             stroke="#666"
@@ -219,7 +231,7 @@ const WeightChart: React.FC<WeightChartProps> = ({
             tickLine={{ stroke: '#ccc' }}
           />
           {(showBodyFat || showBMI) && (
-            <YAxis 
+            <YAx 
               yAxisId="percentage"
               orientation="right"
               domain={[0, 50]}
@@ -229,12 +241,12 @@ const WeightChart: React.FC<WeightChartProps> = ({
             />
           )}
           
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <TTip content={<CustomTooltip />} />
+          <Lgd />
 
           {/* Target weight reference line */}
           {targetWeight && (
-            <ReferenceLine 
+            <Ref 
               y={targetWeight} 
               stroke="#10B981" 
               strokeDasharray="5 5"
@@ -244,7 +256,7 @@ const WeightChart: React.FC<WeightChartProps> = ({
           )}
 
           {/* Weight line */}
-          <Line
+          <Lne
             yAxisId="weight"
             type="monotone"
             dataKey="weight"
@@ -258,7 +270,7 @@ const WeightChart: React.FC<WeightChartProps> = ({
 
           {/* Body fat line */}
           {showBodyFat && (
-            <Line
+            <Lne
               yAxisId="percentage"
               type="monotone"
               dataKey="bodyFat"
@@ -272,7 +284,7 @@ const WeightChart: React.FC<WeightChartProps> = ({
 
           {/* Muscle mass bars */}
           {showMuscle && (
-            <Bar
+            <BrBar
               yAxisId="weight"
               dataKey="muscleMass"
               fill="#8B5CF6"
@@ -283,7 +295,7 @@ const WeightChart: React.FC<WeightChartProps> = ({
 
           {/* BMI line */}
           {showBMI && (
-            <Line
+            <Lne
               yAxisId="percentage"
               type="monotone"
               dataKey="bmi"
@@ -297,15 +309,15 @@ const WeightChart: React.FC<WeightChartProps> = ({
 
           {/* Brush for zooming */}
           {chartData.length > 10 && (
-            <Brush 
+            <Brsh 
               dataKey="date" 
               height={30} 
               stroke="#3B82F6"
               fill="#f8fafc"
             />
           )}
-        </ComposedChart>
-      </ResponsiveContainer>
+        </CChart>
+      </Responsive>
 
       {/* BMI Categories Reference */}
       {showBMI && (

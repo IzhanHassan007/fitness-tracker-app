@@ -53,7 +53,7 @@ const WeightTracker: React.FC = () => {
 
   const getFilterParams = () => {
     const now = new Date();
-    let startDate = new Date();
+    let startDate: Date | null = new Date();
     
     switch (timeRange) {
       case '1month':
@@ -74,7 +74,7 @@ const WeightTracker: React.FC = () => {
     }
 
     return {
-      startDate: startDate?.toISOString(),
+      startDate: startDate ? startDate.toISOString() : undefined,
       endDate: now.toISOString(),
       limit: 100,
       sortBy: 'measuredAt',

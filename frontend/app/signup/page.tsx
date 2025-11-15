@@ -51,7 +51,10 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const { isLoading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const auth = useSelector((state: RootState) => state.auth);
+  const isLoading = auth?.isLoading ?? false;
+  const error = auth?.error ?? null;
+  const isAuthenticated = !!auth?.isAuthenticated;
 
   const {
     register,

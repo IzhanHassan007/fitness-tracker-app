@@ -64,8 +64,9 @@ export const loginUser = createAsyncThunk(
       const response = await withTimeout(authAPI.login(credentials));
       
       if (response.success) {
-        // Store token in cookies
-        Cookies.set('fitness_token', response.token, { expires: 7 });
+        if (response.token) {
+          Cookies.set('fitness_token', response.token, { expires: 7 });
+        }
         toast.success('Login successful!');
         return { user: response.user, token: response.token };
       } else {
@@ -128,8 +129,9 @@ export const signupUser = createAsyncThunk(
       const response = await withTimeout(authAPI.signup(userData));
       
       if (response.success) {
-        // Store token in cookies
-        Cookies.set('fitness_token', response.token, { expires: 7 });
+        if (response.token) {
+          Cookies.set('fitness_token', response.token, { expires: 7 });
+        }
         toast.success('Account created successfully!');
         return { user: response.user, token: response.token };
       } else {
@@ -257,7 +259,7 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.token = action.payload.token ?? null;
         state.isAuthenticated = true;
         state.error = null;
       })
@@ -276,7 +278,7 @@ const authSlice = createSlice({
       .addCase(signupUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.token = action.payload.token ?? null;
         state.isAuthenticated = true;
         state.error = null;
       })

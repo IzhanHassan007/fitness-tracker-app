@@ -152,8 +152,8 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, values, setFieldValue }) => (
-          <Form className="space-y-6">
+        {({ isSubmitting, values, setFieldValue, handleSubmit, errors }) => (
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Weight Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -167,7 +167,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                   placeholder="Enter weight"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <ErrorMessage name="weight.value" component="div" className="text-red-600 text-sm mt-1" />
+                {errors?.weight && (errors as any)?.weight?.value && (
+                  <div className="text-red-600 text-sm mt-1">{String((errors as any).weight.value)}</div>
+                )}
               </div>
 
               <div>
@@ -182,7 +184,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                   <option value="kg">Kilograms (kg)</option>
                   <option value="lbs">Pounds (lbs)</option>
                 </Field>
-                <ErrorMessage name="weight.unit" component="div" className="text-red-600 text-sm mt-1" />
+                {errors?.weight && (errors as any)?.weight?.unit && (
+                  <div className="text-red-600 text-sm mt-1">{String((errors as any).weight.unit)}</div>
+                )}
               </div>
             </div>
 
@@ -197,7 +201,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                   type="date"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <ErrorMessage name="measuredAt" component="div" className="text-red-600 text-sm mt-1" />
+                {errors?.measuredAt && (
+                  <div className="text-red-600 text-sm mt-1">{String(errors.measuredAt)}</div>
+                )}
               </div>
 
               <div>
@@ -218,7 +224,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                   <option value="before-meal">Before Meal</option>
                   <option value="after-meal">After Meal</option>
                 </Field>
-                <ErrorMessage name="timeOfDay" component="div" className="text-red-600 text-sm mt-1" />
+                {errors?.timeOfDay && (
+                  <div className="text-red-600 text-sm mt-1">{String(errors.timeOfDay)}</div>
+                )}
               </div>
             </div>
 
@@ -251,7 +259,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                       placeholder="Body fat percentage"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <ErrorMessage name="bodyFat.percentage" component="div" className="text-red-600 text-sm mt-1" />
+                    {(errors as any)?.bodyFat?.percentage && (
+                      <div className="text-red-600 text-sm mt-1">{String((errors as any).bodyFat.percentage)}</div>
+                    )}
                   </div>
 
                   <div>
@@ -272,7 +282,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                       <option value="visual-estimate">Visual Estimate</option>
                       <option value="other">Other</option>
                     </Field>
-                    <ErrorMessage name="bodyFat.method" component="div" className="text-red-600 text-sm mt-1" />
+                    {(errors as any)?.bodyFat?.method && (
+                      <div className="text-red-600 text-sm mt-1">{String((errors as any).bodyFat.method)}</div>
+                    )}
                   </div>
                 </div>
 
@@ -288,7 +300,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                       placeholder="Muscle mass"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <ErrorMessage name="muscleMass.value" component="div" className="text-red-600 text-sm mt-1" />
+                    {(errors as any)?.muscleMass?.value && (
+                      <div className="text-red-600 text-sm mt-1">{String((errors as any).muscleMass.value)}</div>
+                    )}
                   </div>
 
                   <div>
@@ -302,7 +316,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                       placeholder="Water percentage"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <ErrorMessage name="waterPercentage" component="div" className="text-red-600 text-sm mt-1" />
+                    {errors?.waterPercentage && (
+                      <div className="text-red-600 text-sm mt-1">{String(errors.waterPercentage)}</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -320,7 +336,9 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                 placeholder="Add any notes about this measurement..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
               />
-              <ErrorMessage name="notes" component="div" className="text-red-600 text-sm mt-1" />
+              {errors?.notes && (
+                <div className="text-red-600 text-sm mt-1">{String(errors.notes)}</div>
+              )}
             </div>
 
             {/* Action Buttons */}
@@ -352,7 +370,7 @@ const WeightEntryForm: React.FC<WeightEntryFormProps> = ({
                 )}
               </button>
             </div>
-          </Form>
+          </form>
         )}
       </Formik>
     </div>
