@@ -42,9 +42,13 @@ const initialState: AuthState = {
 };
 
 // Async thunks
-export const loginUser = createAsyncThunk(
+export const loginUser = createAsyncThunk<
+  { user: User; token: string | null },
+  { email: string; password: string },
+  { rejectValue: string }
+>(
   'auth/loginUser',
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+  async (credentials, { rejectWithValue }) => {
     try {
       const withTimeout = async <T>(promise: Promise<T>, ms = 2500): Promise<T> => {
         return new Promise<T>((resolve, reject) => {
@@ -68,7 +72,7 @@ export const loginUser = createAsyncThunk(
           Cookies.set('fitness_token', response.token, { expires: 7 });
         }
         toast.success('Login successful!');
-        return { user: response.user, token: response.token };
+        return { user: response.user as User, token: response.token ?? null };
       } else {
         const code: string | undefined = (response as any).code;
         const mapped = code === 'auth/invalid-email' ? 'Invalid email address' :
@@ -98,9 +102,9 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const signupUser = createAsyncThunk(
-  'auth/signupUser',
-  async (userData: {
+export const signupUser = createAsyncThunk<
+  { user: User; token: string | null },
+  {
     name: string;
     email: string;
     password: string;
@@ -109,7 +113,11 @@ export const signupUser = createAsyncThunk(
     height?: { value: number; unit: string };
     activityLevel?: string;
     fitnessGoals?: string[];
-  }, { rejectWithValue }) => {
+  },
+  { rejectValue: string }
+>(
+  'auth/signupUser',
+  async (userData, { rejectWithValue }) => {
     try {
       const withTimeout = async <T>(promise: Promise<T>, ms = 5000): Promise<T> => {
         return new Promise<T>((resolve, reject) => {
@@ -133,7 +141,7 @@ export const signupUser = createAsyncThunk(
           Cookies.set('fitness_token', response.token, { expires: 7 });
         }
         toast.success('Account created successfully!');
-        return { user: response.user, token: response.token };
+        return { user: response.user as User, token: response.token ?? null };
       } else {
         const code: string | undefined = (response as any).code;
         const mapped = code === 'auth/email-already-in-use' ? 'Email already in use' :
