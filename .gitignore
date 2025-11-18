@@ -154,3 +154,5 @@ dist/
 
 # Local development
 .local
+frontend/.env
+.env
