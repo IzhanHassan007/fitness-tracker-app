@@ -1,3 +1,11 @@
+Add-Content .gitignore ".env"
+Add-Content .gitignore ".env.local"
+Add-Content .gitignore ".env.production"
+Add-Content .gitignore "frontend/.env"
+Add-Content .gitignore "frontend/.netlify/"
+Add-Content .gitignore ".next/"
+Add-Content .gitignore "frontend/.next/"
+
 # Dependencies
 node_modules/
 npm-debug.log*
