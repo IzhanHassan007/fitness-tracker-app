@@ -46,7 +46,10 @@ export default function LoginPage() {
   }, [dispatch]);
 
   const onSubmit = async (data: LoginFormData) => {
-    await dispatch(loginUser(data));
+    try {
+      await dispatch(loginUser(data)).unwrap();
+      router.replace('/dashboard');
+    } catch (e) {}
   };
 
   return (

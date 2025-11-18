@@ -98,7 +98,10 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupFormData) => {
     const { confirmPassword, ...submitData } = data;
-    await dispatch(signupUser(submitData));
+    try {
+      await dispatch(signupUser(submitData)).unwrap();
+      router.replace('/dashboard');
+    } catch (e) {}
   };
 
   const renderStep1 = () => (
